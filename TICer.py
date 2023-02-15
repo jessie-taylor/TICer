@@ -4,6 +4,7 @@
 import pandas as pd
 from astroquery.simbad import Simbad
 import numpy as np
+import warnings
 
 def TICer(KIC_ID: str):
   """ 
@@ -20,10 +21,16 @@ def TICer(KIC_ID: str):
   ------
   TIC_ID : str
       The associated TIC identifier of the input star
+      None if no associated TIC found
 
   """
   # Obtain all associated IDs with the given KIC#
   ids = Simbad.query_objectids(("KIC" + KIC_ID))
+  # Raise error and return None if no other IDs found
+  if len(ids) == 1:
+    warnings.warn("No TIC found for input KIC " + KIC_ID 
+                                                + " returning None")
+    return None
   # Convert to dataframe
   dfids = pd.DataFrame()
   dfids["ID"] = ids.to_pandas() 
@@ -33,7 +40,8 @@ def TICer(KIC_ID: str):
   tic_mask = dfids["ID"].str.startswith("TIC")
   # Apply mask
   dfids_masked = dfids[tic_mask]
-  # Convert to string and split to get list with entry 1 as TIC# (with no "TIC")
+  # Convert to string 
+  # and split to get list with entry 1 as TIC# (with no "TIC")
   TIC_ID = dfids_masked.to_string().split("TIC ")[1]
   
   #print("KIC_ID =", KIC_ID, "\nTIC_ID =", TIC_ID)
