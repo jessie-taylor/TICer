@@ -17,8 +17,8 @@ def TICer(KIC_ID: str):
       The Kepler (KIC) ID of the star, added without 
       the "KIC" string at the beginning, so just the numbers.
   
-  Yields
-  ------
+  Returns
+  -------
   TIC_ID : str
       The associated TIC identifier of the input star
   None if no associated TIC found
